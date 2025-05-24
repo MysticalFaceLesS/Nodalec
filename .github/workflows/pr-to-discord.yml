@@ -13,6 +13,6 @@ jobs:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
           title: 'Название: ${{ github.event.pull_request.title }}'
           message: "${{ github.event.pull_request.body }} \n**Ветка:** ${{ github.event.pull_request.base.ref }} \n**Creator:** ${{ github.event.pull_request.user.login }}\n${{ github.event.pull_request.html_url }}"
-          include_image: true
+          include_image: false
           avatar_url: ${{ github.event.pull_request.user.avatar_url }}
           username: 'Shiptest: Changelog'
