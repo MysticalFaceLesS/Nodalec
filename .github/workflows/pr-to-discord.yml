@@ -1,20 +1,18 @@
-name: PR to Discord
-
+name: 'New PR Notification'
 on:
-  pull_request:
-    types: [closed]
+  pull_request: 
+    types: [opened, reopened, closed]
 
 jobs:
   notify:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: Notify Discord2
-        uses: stegzilla/discord-notify@v4  # Use the latest stable version
-        env:
+      - name: Send Discord notification
+        uses: stegzilla/discord-notify@v2
+        with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
-          title: ${{ github.event.pull_request.title }}
-          message: |
-            ✅ Pull Request merged: **${{ github.event.pull_request.title }}**
-            Author: ${{ github.event.pull_request.user.login }}
-            Link: ${{ github.event.pull_request.html_url }}
+          title: New PR opened
+          message: "**${{ github.event.pull_request.title }}**\n**Creator:** ${{ github.event.pull_request.user.login }}\n${{ github.event.pull_request.html_url }}"
+          include_image: true
+          avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          username: GitHub PR Notifier
