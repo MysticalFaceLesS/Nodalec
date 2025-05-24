@@ -1,21 +1,18 @@
-name: PR to Discord
-
+name: 'New PR Notification'
 on:
-  pull_request:
-    types: [closed]
+  pull_request: 
+    types: [opened, reopened, closed]
 
 jobs:
   notify:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-      - name: Notify Discord
-        uses: rtCamp/action-discord-notify@9c7d214c8e2b7cf8e3b944e07f4d94e1c7c4d5f5  # Use the latest stable version
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_USERNAME: GitHub Actions
-          DISCORD_AVATAR: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-          DISCORD_MESSAGE: |
-            ✅ Pull Request merged: **${{ github.event.pull_request.title }}**
-            Author: ${{ github.event.pull_request.user.login }}
-            Link: ${{ github.event.pull_request.html_url }}
+      - name: Send Discord notification
+        uses: stegzilla/discord-notify@v2
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          title: ${{ github.event.pull_request.title }}
+          message: "**Ветка:** ${{ github.event.pull_request.base.ref }} **\n Описание:** ${{ github.event.pull_request.body }} \n**Creator:** ${{ github.event.pull_request.user.login }}\n${{ github.event.pull_request.html_url }}"
+          include_image: true
+          avatar_url: ${{ github.event.pull_request.user.avatar_url }}
+          username: ${{ github.event.pull_request.user.login }}
