@@ -1,0 +1,19 @@
+name: PR to Discord
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  notify:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send PR info to Discord
+        uses: Ilshidur/action-discord@master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message: |
+            ✅ Pull Request merged: **${{ github.event.pull_request.title }}**
+            Автор: ${{ github.event.pull_request.user.login }}
+            Ссылка: ${{ github.event.pull_request.html_url }}
