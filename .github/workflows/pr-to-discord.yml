@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notify Discord
-        uses: rtCamp/action-discord-notify@9c7d214c8e2b7cf8e3b944e07f4d94e1c7c4d5f5  # Use the latest stable version
+        uses: stegzilla/discord-notify@v4  # Use the latest stable version
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_USERNAME: GitHub Actions
