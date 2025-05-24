@@ -11,7 +11,7 @@ jobs:
         uses: stegzilla/discord-notify@v2
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
-          title: 'Название: ${{ github.event.pull_request.title }}'
+          title: ''
           message: "${{ github.event.pull_request.body }} \n**Ветка:** ${{ github.event.pull_request.base.ref }} \n**Автор:** ${{ github.event.pull_request.user.login }}\n${{ github.event.pull_request.html_url }}"
           include_image: true
           avatar_url: ${{ github.event.pull_request.user.avatar_url }}
