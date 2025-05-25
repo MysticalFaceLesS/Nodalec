@@ -15,8 +15,8 @@ jobs:
           echo "COMMITS_COUNT=$(jq '.commits | length' $GITHUB_EVENT_PATH)" >> $GITHUB_ENV
 
       - name: Format commit list
-          id: commits
-          run: |
+        id: commits
+        run: |
             echo "COMMITS<<EOF" >> $GITHUB_ENV
             jq -r '.commits[:15][] | "[`" + (.id[0:7]) + "`](" + .url + ") " + .message + " - " + .author.name' $GITHUB_EVENT_PATH >> $GITHUB_ENV
             echo "EOF" >> $GITHUB_ENV
@@ -25,7 +25,7 @@ jobs:
         uses: stegzilla/discord-notify@v4
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
-          title: "2[${{ github.repository }}:${{ github.ref_name }}] ${{ env.COMMITS_COUNT }} new commits"
+          title: "[${{ github.repository }}:${{ github.ref_name }}] ${{ env.COMMITS_COUNT }} new commits"
           message: |
             ${{ env.COMMITS }}
           username: ${{ github.event.pusher.name }}
