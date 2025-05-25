@@ -15,5 +15,5 @@ jobs:
           title: " "
           message: "**Автор:** ${{ github.event.pusher.username }} \n**Ветка:** ${{ github.event.ref }} \n**Описание:** ${{ github.event.compare }} \n${{ github.event.head_commit.url }}"
           include_image: true
-          avatar_url: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png "
+          avatar_url: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
           username: "Shiptest: Changelog"
