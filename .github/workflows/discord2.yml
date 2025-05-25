@@ -1,19 +1,26 @@
-name: 'DISCORD PUSH'
+name: Discord Notify Commits
+
 on:
   push:
     branches:
-      - main
-    
+      - main # или нужная ветка
+
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
+      - name: Format commit list
+        id: commits
+        run: |
+          echo "COMMITS<<EOF" >> $GITHUB_ENV
+          jq -r '.commits[] | "[`" + (.id[0:7]) + "`](" + .url + ") " + .message + " - " + .author.name' $GITHUB_EVENT_PATH >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
       - name: Send Discord notification
         uses: stegzilla/discord-notify@v4
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
-          title: " "
-          message: "**Автор:** ${{ github.event.pusher.name }} \n**Ветка:** ${{ github.event.base_ref }} \n**Описание:** ${{ github.event.commits.added }} \n\n${{ github.event.head_commit.url }}"
-          include_image: true
-          avatar_url: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-          username: "Shiptest: Changelog"
+          title: "[${{ github.repository }}:${{ github.ref_name }}] ${{ github.event.commits | length }} new commits"
+          message: |
+            ${{ env.COMMITS }}
+          username: ${{ github.event.pusher.name }}
