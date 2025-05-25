@@ -3,12 +3,17 @@ name: Discord Notify Commits
 on:
   push:
     branches:
-      - main # или нужная ветка
+      - main
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
+      - name: Get commit count
+        id: count
+        run: |
+          echo "COMMITS_COUNT=$(jq '.commits | length' $GITHUB_EVENT_PATH)" >> $GITHUB_ENV
+
       - name: Format commit list
         id: commits
         run: |
@@ -20,7 +25,7 @@ jobs:
         uses: stegzilla/discord-notify@v4
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
-          title: "[${{ github.repository }}:${{ github.ref_name }}] ${{ length(fromJson(toJson(github.event.commits))) }} new commits"
+          title: "[${{ github.repository }}:${{ github.ref_name }}] ${{ env.COMMITS_COUNT }} new commits"
           message: |
             ${{ env.COMMITS }}
           username: ${{ github.event.pusher.name }}
