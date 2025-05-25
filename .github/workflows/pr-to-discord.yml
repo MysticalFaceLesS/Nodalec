@@ -1,18 +1,1 @@
-name: 'New PR Notification'
-on:
-  pull_request: 
-    types: [opened, reopened, closed]
 
-jobs:
-  notify:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send Discord notification
-        uses: stegzilla/discord-notify@v4
-        with:
-          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
-          title: ${{ github.event.pull_request.title }}
-          message: "**Ветка:** ${{ github.event.pull_request.base.ref }} **\n Описание:** ${{ github.event.pull_request.body }} \n**Creator:** ${{ github.event.pull_request.user.login }}\n${{ github.event.pull_request.html_url }}"
-          include_image: true
-          avatar_url: ${{ github.event.pull_request.user.avatar_url }}
-          username: ${{ github.event.pull_request.user.login }}
