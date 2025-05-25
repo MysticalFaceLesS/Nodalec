@@ -1,27 +1,34 @@
-name: Discord Notify Commits
+name: 'Discord Notification'
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    types: [closed]
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
+      # Для push: формируем список коммитов и их количество
       - name: Get commit count
+        if: github.event_name == 'push'
         id: count
         run: |
           echo "COMMITS_COUNT=$(jq '.commits | length' $GITHUB_EVENT_PATH)" >> $GITHUB_ENV
 
       - name: Format commit list
+        if: github.event_name == 'push'
         id: commits
         run: |
           echo "COMMITS<<EOF" >> $GITHUB_ENV
           jq -r '.commits[] | "[`" + (.id[0:7]) + "`](" + .url + ") " + .message + " - " + .author.name' $GITHUB_EVENT_PATH >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - name: Send Discord notification
+      # Отправка уведомления в Discord
+      - name: Send Discord notification (push)
+        if: github.event_name == 'push'
         uses: stegzilla/discord-notify@v4
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
@@ -29,3 +36,14 @@ jobs:
           message: |
             ${{ env.COMMITS }}
           username: ${{ github.event.pusher.name }}
+
+      - name: Send Discord notification (PR closed)
+        if: github.event_name == 'pull_request'
+        uses: stegzilla/discord-notify@v4
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK }}
+          title: ${{ github.event.pull_request.title }}
+          message: "**Ветка:** ${{ github.event.pull_request.base.ref }} **\n Описание:** ${{ github.event.pull_request.body }} \n**Creator:** ${{ github.event.pull_request.user.login }}\n${{ github.event.pull_request.html_url }}"
+          include_image: true
+          avatar_url: ${{ github.event.pull_request.user.avatar_url }}
+          username: ${{ github.event.pull_request.user.login }}
