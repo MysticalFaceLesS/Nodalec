@@ -2,9 +2,7 @@ name: 'DISCORD PUSH'
 on:
   push:
     branches:
-      - master
-      - 2
-      - 3
+      - main
     
 jobs:
   notify:
